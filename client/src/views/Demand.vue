@@ -167,7 +167,7 @@ export default {
     })
 
     const getForecastsByTrend = (trend) => {
-      return forecasts.value.items.filter(f => f.trend === trend)
+      return forecasts.value.filter(f => f.trend === trend)
     }
 
     const getChangePercent = (forecast) => {
