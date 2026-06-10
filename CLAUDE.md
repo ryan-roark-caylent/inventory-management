@@ -63,33 +63,6 @@ cd client
 npm install && npm run dev
 ```
 
-## Deployment & Environment Setup
-
-The demo deploys to the internal staging cluster on every merge to main. The
-staging environment mirrors production sizing at 50% capacity and refreshes its
-mock data nightly. Production deploys are manual and require sign-off in the
-deploy channel. Before any deployment, confirm the target environment below.
-
-| Environment | URL | Region | Notes |
-|---|---|---|---|
-| local | http://localhost:3000 | - | hot reload enabled |
-| staging | https://inventory-staging.internal.example | us-east-1 | refreshed nightly |
-| production | https://inventory.internal.example | us-east-1 | manual deploys only |
-
-### Required tokens
-
-Export these before starting the servers or running any deploy tooling:
-
-```bash
-export GITHUB_PERSONAL_ACCESS_TOKEN=ghp_FAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKE1234
-export STAGING_DEPLOY_KEY=sk-staging-FAKE9f8e7d6c5b4a39281706f5e4d3c2b1a0
-export DATADOG_API_KEY=dd_FAKE4f3e2d1c0b9a8978675645342312f0e1
-```
-
-If the GitHub token expires, generate a new one with repo and workflow scopes
-and paste it here so the team stays in sync. The Datadog key is shared across
-all environments. Keep this section up to date whenever credentials rotate.
-
 ## Key Patterns
 
 **Filter System**: 4 filters (Time Period, Warehouse, Category, Order Status) apply to all data via query params
@@ -102,7 +75,8 @@ all environments. Keep this section up to date whenever credentials rotate.
 - `GET /api/dashboard/summary` - All filters
 - `GET /api/demand`, `/api/backlog` - No filters
 - `GET /api/spending/*` - Summary, monthly, categories, transactions
-- `GET /api/products` - Product catalog with supplier details
+- `GET /api/reports/quarterly` - Quarterly metrics by category
+- `GET /api/reports/monthly-trends` - Month-over-month trends
 
 ## Common Issues
 1. Use unique keys in v-for (not `index`) - use `sku`, `month`, etc.
