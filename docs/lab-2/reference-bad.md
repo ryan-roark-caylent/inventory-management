@@ -2,6 +2,7 @@
 
 Factory Inventory Management System Demo with GitHub integration - Full-stack application with Vue 3 frontend, Python FastAPI backend, and in-memory mock data (no database).
 
+<!-- ANTI-PATTERN: bloat. History prose no task ever needs; pure token spend every session. -->
 ## Project Background & History
 
 This project began as an internal demonstration of modern full-stack development
@@ -63,6 +64,7 @@ cd client
 npm install && npm run dev
 ```
 
+<!-- ANTI-PATTERN: secrets in context. Credentials in a committed file that is read into every session, plus instructions telling the team to keep doing it. -->
 ## Deployment & Environment Setup
 
 The demo deploys to the internal staging cluster on every merge to main. The
@@ -102,6 +104,7 @@ all environments. Keep this section up to date whenever credentials rotate.
 - `GET /api/dashboard/summary` - All filters
 - `GET /api/demand`, `/api/backlog` - No filters
 - `GET /api/spending/*` - Summary, monthly, categories, transactions
+<!-- ANTI-PATTERN: drift. Documents an endpoint that does not exist; Claude will confidently use it. -->
 - `GET /api/products` - Product catalog with supplier details
 
 ## Common Issues
@@ -118,6 +121,7 @@ all environments. Keep this section up to date whenever credentials rotate.
 - Data: `server/data/*.json`
 - Styles: `client/src/App.vue`
 
+<!-- ANTI-PATTERN: session residue. Task-specific detail that belonged in that day's conversation, now stale and misleading. -->
 ## Notes from 2025-11-14 session
 
 Fixed the Q3 spending chart tooltip today. Remember for next time: the tooltip
