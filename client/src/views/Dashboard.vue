@@ -267,6 +267,7 @@
       :is-open="showBacklogModal"
       :backlog-item="selectedBacklogItem"
       @close="showBacklogModal = false"
+      @po-created="handlePOCreated"
     />
   </div>
 </template>
@@ -622,6 +623,10 @@ export default {
       showBacklogModal.value = true
     }
 
+    const handlePOCreated = () => {
+      loadData()
+    }
+
     // Watch for filter changes and reload data
     watch([selectedPeriod, selectedLocation, selectedCategory, selectedStatus], () => {
       loadData()
@@ -659,6 +664,7 @@ export default {
       showBacklogModal,
       selectedBacklogItem,
       showBacklogDetail,
+      handlePOCreated,
       selectedPeriod,
       selectedCurrency: currentCurrency,
       formatCurrency,

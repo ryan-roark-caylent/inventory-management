@@ -77,6 +77,15 @@
 
           <div class="modal-footer">
             <button class="btn-secondary" @click="close">Close</button>
+            <span v-if="backlogItem.has_purchase_order || poCreated" class="po-created-badge">PO Created</span>
+            <button
+              v-else
+              class="btn-primary"
+              :disabled="creating"
+              @click="createPO"
+            >
+              {{ creating ? 'Creating...' : 'Create Purchase Order' }}
+            </button>
           </div>
         </div>
       </div>
@@ -85,8 +94,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from '../composables/useI18n'
+import { api } from '../api'
 
 const { translateProductName } = useI18n()
 
@@ -101,7 +111,18 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'po-created'])
+
+const creating = ref(false)
+const poCreated = ref(false)
+
+// Reset local state when the modal opens for a new item
+watch(() => props.isOpen, (val) => {
+  if (val) {
+    creating.value = false
+    poCreated.value = false
+  }
+})
 
 const shortage = computed(() => {
   if (!props.backlogItem) return 0
@@ -120,6 +141,28 @@ const formatDate = (dateString) => {
     month: 'long',
     day: 'numeric'
   })
+}
+
+const createPO = async () => {
+  if (!props.backlogItem) return
+  creating.value = true
+  try {
+    const today = new Date()
+    const delivery = new Date(today)
+    delivery.setDate(today.getDate() + 14)
+    const deliveryDate = delivery.toISOString().split('T')[0]
+    await api.createPurchaseOrder({
+      backlog_item_id: props.backlogItem.id,
+      quantity: shortage.value,
+      supplier_name: 'Acme Industrial Supply',
+      unit_cost: 10.00,
+      expected_delivery_date: deliveryDate,
+    })
+    poCreated.value = true
+    emit('po-created')
+  } finally {
+    creating.value = false
+  }
 }
 </script>
 
@@ -355,6 +398,38 @@ const formatDate = (dateString) => {
 .btn-secondary:hover {
   background: #e2e8f0;
   border-color: #cbd5e1;
+}
+
+.btn-primary {
+  padding: 0.625rem 1.25rem;
+  background: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.po-created-badge {
+  padding: 0.5rem 1rem;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #166534;
 }
 
 /* Modal transition animations */
