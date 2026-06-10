@@ -44,15 +44,15 @@ The `/api/products` line must be absent. The two reports lines must be present. 
 
 ## 3. Expected /context Arc
 
-| State | Figure | Notes |
+No absolute figures are printed by design: per-participant `/context` readings vary with each person's global CLAUDE.md, MCP setup, and CLI version, so a printed number would be misleading. Grade direction and rough size against the participant's OWN baseline:
+
+| State | Expected vs their baseline | Notes |
 |---|---|---|
-| lab-2-start (seeded) | [TOK-A] | Measured on lab-2-start with fresh claude session, `/context` |
-| Core-complete (step 5) | [TOK-C] | After steps 3 and 4; requires `/clear` before `/context` |
-| Extra-credit end state | [TOK-EC] | After EC-1 also removes Background and Notes sections |
+| lab-2-start (seeded) | Baseline | The project-CLAUDE.md row of their `/context`, fresh session |
+| Core-complete (step 5) | A few hundred tokens LOWER | After steps 3 and 4; requires `/clear` before `/context` |
+| Extra-credit end state | Lower still | After EC-1 also removes Background and Notes sections |
 
-Expected step-5 drop: [TOK-A] − [TOK-C] tokens
-
-**Note:** These figures must be measured at build time (Section 10 items 10–11) and stamped here before handoff. Running `/context` in a fresh session on each branch with the exact content above produces the measured values.
+A participant whose project-CLAUDE.md figure dropped by a few hundred tokens after the cut pass is on track; the exact figure does not matter.
 
 ---
 
