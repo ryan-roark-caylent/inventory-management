@@ -8,7 +8,7 @@
 
 ---
 
-> **Tell-Claude convention:** every app, server, and test action in this lab goes through Claude or the repo's slash skills (`/start`), never the raw terminal. CLAUDE.md and the skills already carry the how. The two deliberate human-typed exceptions are the Step 0 branch ritual and the Step 6 `git log` check — those control and verify the environment Claude runs in.
+> **Tell-Claude convention:** every app, server, and test action in this lab goes through Claude or the repo's slash skills (`/start`), never the raw terminal. CLAUDE.md and the skills already carry the how. The deliberate human-typed exceptions are the Step 0 branch ritual (before Claude starts) and the Step 6 `! git log` check (typed inside Claude using the `!` prefix) — those control and verify the environment Claude runs in.
 
 ---
 
@@ -52,16 +52,21 @@
 
 ---
 
-## Step 2 — `/model` beat (1 min)
+## Step 2 — Configure your session (1 min)
 
 1. In Claude Code, type:
    ```
+   /permissions
+   ```
+   Confirm the mode is **Default** (not Auto-accept). The permission prompts in Steps 3–4 are the lesson; auto-accept skips them.
+
+2. Type:
+   ```
    /model
    ```
+   Confirm **Sonnet** is selected; if not, select it.
 
-2. **Observe:** the model picker. Confirm **Sonnet** is selected; if not, select it.
-
-3. Why (one line): this is a one-line bug fix. Sonnet does it as well as Opus at a fraction of the cost and latency. Defaulting to Opus burns your monthly quota for nothing.
+3. Why Sonnet: this is a one-line bug fix. Sonnet does it as well as Opus at a fraction of the cost and latency. Defaulting to Opus burns your monthly quota for nothing.
 
 ---
 
@@ -73,6 +78,8 @@
    ```
 
 2. **Observe:** Claude reads `server/main.py`, finds the summary endpoint, and proposes an edit. A **permission prompt** appears before any file changes. That prompt is the default permission mode doing its job: nothing touches your files until you approve it. Do NOT approve yet; go to Step 4.
+
+   > **No permission prompt appeared?** You are in auto-accept mode — go back to Step 2.1 and run `/permissions` to switch to Default mode, then press Esc and re-paste this prompt.
 
 ---
 
@@ -89,9 +96,9 @@
    total_backlog_items = len(backlog_items)
    ```
 
-3. **The green line** (what replaces it). Read it. The right shape: still one line, and it mirrors the pattern the surrounding summary stats already use.
+3. **The green line(s)** (what replaces it). Read every insertion. The right shape: one or two lines that call `apply_filters(backlog_items, warehouse, category)` directly — the same helper the surrounding stats already use. Claude may produce this as a single inline call or as two lines (assign then count); both are correct if they call `apply_filters`.
 
-4. **The sanity check:** does the new line use the same helper and the same arguments as the filtered stats a few lines above it? If yes, accept. If Claude proposed anything broader (multiple files, multiple hunks, a refactor), reject it, press Esc twice to rewind, and re-paste the Step 3 prompt.
+4. **The sanity check:** does the replacement call `apply_filters` with `warehouse` and `category` — the same helper and arguments the filtered stats use a few lines above? If yes, accept. If the replacement builds a SKU set from inventory (`{item["sku"] for item in ...}`) or touches any other file, reject it, press Esc twice to rewind, and re-paste the Step 3 prompt. A SKU-join looks plausible but breaks the unfiltered count (Step 5 will catch it either way).
 
 Accept the edit. The whole review took about ten seconds. That is the entire cost of knowing exactly what changed.
 
@@ -127,11 +134,11 @@ Accept the edit. The whole review took about ten seconds. That is the entire cos
 
 2. A permission prompt shows the `git commit` command including the message. **Read the message before approving.** A good one names the behavior, not the line: e.g. "Fix dashboard total_backlog_items to respect warehouse and category filters". If it is vague ("fix bug"), tell Claude to rewrite it before approving.
 
-3. Confirm in your terminal:
+3. From inside Claude Code, type:
    ```
-   git log --oneline -2
+   ! git log --oneline -2
    ```
-   **Observe:** exactly one new commit sits on top of the commit you branched from (the `lab-1-start` tip). If Claude offers to push or open a PR, decline. Nothing leaves your machine today.
+   The `!` prefix runs a shell command without leaving Claude — Claude ran the commit; you verify it. **Observe:** exactly one new commit sits on top of the commit you branched from (the `lab-1-start` tip). If Claude offers to push or open a PR, decline. Nothing leaves your machine today.
 
 4. Self-check the done criteria with two things on your own screen: the `?warehouse=Tokyo` browser tab and the `git log` output. Then post the chat signal (optional but encouraged): paste your one-line diff and your `git log --oneline -2` output into the meeting chat.
 
